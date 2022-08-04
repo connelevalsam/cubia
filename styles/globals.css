@@ -20,9 +20,34 @@ a {
 }
 
 .card {
-  @apply mb-5 block rounded-lg border border-gray-200 shadow-md
+  @apply mb-5 block rounded-lg border border-gray-200 shadow-md pb-5
 }
 
 .primary-button {
   @apply rounded bg-amber-300 py-2 px-4 shadow outline-none hover:bg-amber-400 active:bg-amber-500
+}
+
+.default-button {
+  @apply rounded bg-gray-100 text-black py-2 px-4 shadow outline-none hover:bg-gray-200 active:bg-gray-300
+}
+
+.no-data {
+  @apply mx-auto p-5 rounded-full bg-gray-200;
+  background: url('/images/no_data.png');
+  background-size: cover;
+  background-position: center;
+  height: 50vh;
+  width: 70%;
+}
+
+.items-list {
+  display: flex;
+  height: 68%;
+  width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .items-list{
+    height: auto;
+  }
 }

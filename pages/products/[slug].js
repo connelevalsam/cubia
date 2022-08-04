@@ -1,33 +1,35 @@
 import React, { useContext, useState } from 'react';
-import { useRouter } from 'next/router';
-import data from '../../utils/data';
 import Layout from '../../components/Layout';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Store } from '../../utils/Store';
 import Modal from '../../components/Modal';
+import db from '../../utils/DB';
+import Product from '../../models/Product';
+import NoDataPage from '../../components/NoData';
+import axios from 'axios';
 
-export default function Details() {
+export default function Details(props) {
   const { state, dispatch } = useContext(Store);
-  const { query } = useRouter();
-  const { slug } = query;
-  const product = data.products.find((id) => id.slug === slug);
+  const { product } = props;
   const [toggle, setToggle] = useState(false);
   const [modalType, setModalType] = useState(0);
   const [message, setMessage] = useState('');
   const [btnText, setBtnText] = useState('');
+
   if (!product) {
-    return <div>No product found</div>;
+    return <NoDataPage message="Unable to find product!" />;
   }
   //   console.log(product);
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     // this is to be able to add same item more than once
     const existItem = state.cart.cartItems.find(
       (item) => item.slug === product.slug
     );
     const quantity = existItem ? existItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/products/${product._id}`);
 
-    if (product.countInStock < quantity) {
+    if (data.countInStock < quantity) {
       setToggle(true);
       setModalType(10);
       setMessage('Sorry, product out of stock!');
@@ -56,7 +58,6 @@ export default function Details() {
         message={message}
         btnText={btnText}
       />
-      ;
       <div className="py-2">
         <span className="flex">
           <Link href="/">
@@ -79,7 +80,7 @@ export default function Details() {
           </Link>
         </span>
       </div>
-      <div className="grid md:grid-cols-4 md:gap-3">
+      <div className="grid md:grid-cols-4 md:gap-3 md:my-2">
         <div className="md:col-span-2">
           <Image
             src={product.image}
@@ -106,7 +107,7 @@ export default function Details() {
           <div className="card p-5">
             <div className="flex justify-between mb-2">
               <div>Price</div>
-              <div>&#8358;{product.price}</div>
+              <div>&#8358;{product.price.toLocaleString('en-US')}</div>
             </div>
             <div className="flex justify-between mb-2">
               <div>Status</div>
@@ -120,4 +121,19 @@ export default function Details() {
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { params } = context;
+  const { slug } = params;
+
+  await db.connect();
+  const product = await Product.findOne({ slug }).lean();
+  await db.disconnect();
+
+  return {
+    props: {
+      product: product ? db.convertDocToObj(product) : null,
+    },
+  };
 }

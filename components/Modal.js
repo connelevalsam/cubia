@@ -1,5 +1,4 @@
 export default function Modal({ toggle, offToggle, rank, message, btnText }) {
-  console.log(toggle, rank, message, btnText);
   return (
     <div
       className={

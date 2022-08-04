@@ -2,15 +2,15 @@
 import Link from 'next/link';
 import React from 'react';
 
-export default function ProductItem({ product }) {
+export default function ProductItem({ product, handleAddToCart }) {
   return (
     <div className="card">
       <Link href={`/products/${product.slug}`}>
-        <a>
+        <a className="items-list">
           <img
             src={product.image}
             alt={product.name}
-            className="rounded shadow h-2/3"
+            className="rounded shadow"
           />
         </a>
       </Link>
@@ -23,7 +23,11 @@ export default function ProductItem({ product }) {
         </Link>
         <p className="mb-2">{product.brand}</p>
         <p>&#8358;{product.price}</p>
-        <button className="primary-button" type="button">
+        <button
+          className="primary-button"
+          type="button"
+          onClick={handleAddToCart}
+        >
           Add to cart
         </button>
       </div>
