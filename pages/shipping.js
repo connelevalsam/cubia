@@ -82,7 +82,7 @@ export default function Shipping() {
       })
     );
 
-    router.push('/payment');
+    router.push('/deliverymethod');
   };
   // let countries = Object.keys(data);
   return (

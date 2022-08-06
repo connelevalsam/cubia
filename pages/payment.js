@@ -8,7 +8,7 @@ import { Store } from '../utils/Store';
 
 export default function PaymentScreen() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
-  const [state, dispatch] = useContext(Store);
+  const { state, dispatch } = useContext(Store);
   const { cart } = state;
   const { shippingAddress, paymentMethod } = cart;
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function PaymentScreen() {
   }, [paymentMethod, router, shippingAddress.address]);
 
   const submitHandler = (e) => {
-    e.preventDeafult();
+    e.preventDefault();
     if (!selectedPaymentMethod) {
       return toast.error('Payment type is required');
     }
@@ -33,12 +33,12 @@ export default function PaymentScreen() {
         paymentMethod: selectedPaymentMethod,
       })
     );
-    router.push('/placeholder');
+    router.push('/placeorder');
   };
 
   return (
     <Layout title="Payment method">
-      <CheckoutWizard activeStep={2} />;
+      <CheckoutWizard activeStep={3} />;
       <form className="mx-auto max-w-screen-sm" onSubmit={submitHandler}>
         <h1 className="mb-4 text-xl">Payment method</h1>
         {['PayPal', 'Paystack', 'CashOnDelivery'].map((payment) => (
@@ -59,7 +59,7 @@ export default function PaymentScreen() {
         <div className="mb-4 flex justify-between">
           <button
             className="default-button"
-            onClick={() => router.push('/shipping')}
+            onClick={() => router.push('/deliverymethod')}
             type="button"
           >
             Back
